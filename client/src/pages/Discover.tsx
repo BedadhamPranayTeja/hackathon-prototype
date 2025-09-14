@@ -3,125 +3,159 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import HackathonCard from "@/components/HackathonCard";
 import { Search, Filter, MapPin, Calendar } from "lucide-react";
-import hackathonHeroImage from '@assets/generated_images/Hackathon_hero_banner_image_3d5bd0d0.png';
-import aiHackathonImage from '@assets/generated_images/AI_hackathon_theme_image_a7c43aee.png';
-import webHackathonImage from '@assets/generated_images/Web_dev_hackathon_image_3951e5a1.png';
+// Temporarily comment out asset imports to test
+// import hackathonHeroImage from '@assets/generated_images/Hackathon_hero_banner_image_3d5bd0d0.png';
+// import aiHackathonImage from '@assets/generated_images/AI_hackathon_theme_image_a7c43aee.png';
+// import webHackathonImage from '@assets/generated_images/Web_dev_hackathon_image_3951e5a1.png';
 
 export default function Discover() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("date");
   const [showFilters, setShowFilters] = useState(false);
 
   //todo: remove mock functionality
-  const allTags = ["AI", "Machine Learning", "Web Dev", "Mobile", "Blockchain", "IoT", "Sustainability", "Healthcare", "Fintech", "Gaming"];
-  const locations = ["Virtual", "San Francisco, CA", "New York, NY", "Austin, TX", "London, UK", "Berlin, Germany"];
+  const allTags = [
+    "AI",
+    "Machine Learning",
+    "Web Dev",
+    "Mobile",
+    "Blockchain",
+    "IoT",
+    "Sustainability",
+    "Healthcare",
+    "Fintech",
+    "Gaming",
+  ];
+  const locations = [
+    "Virtual",
+    "San Francisco, CA",
+    "New York, NY",
+    "Austin, TX",
+    "London, UK",
+    "Berlin, Germany",
+  ];
 
   const mockHackathons = [
     {
       id: "1",
       title: "AI Innovation Challenge 2024",
-      description: "Build the next generation of AI applications that solve real-world problems. Focus on machine learning, natural language processing, and computer vision.",
+      description:
+        "Build the next generation of AI applications that solve real-world problems. Focus on machine learning, natural language processing, and computer vision.",
       startAt: "2024-03-15T09:00:00Z",
       endAt: "2024-03-17T18:00:00Z",
       tags: ["AI", "Machine Learning", "Innovation"],
       participantCount: 245,
       location: "San Francisco, CA",
-      imageUrl: aiHackathonImage
+      imageUrl: undefined,
     },
     {
       id: "2",
       title: "Global Web Dev Sprint",
-      description: "Create innovative web applications using modern frameworks. Showcase your skills in React, Node.js, and cloud technologies.",
+      description:
+        "Create innovative web applications using modern frameworks. Showcase your skills in React, Node.js, and cloud technologies.",
       startAt: "2024-04-20T10:00:00Z",
       endAt: "2024-04-22T20:00:00Z",
       tags: ["Web Dev", "React", "Node.js"],
       participantCount: 189,
       location: "Virtual",
-      imageUrl: webHackathonImage
+      imageUrl: undefined,
     },
     {
       id: "3",
       title: "Sustainability Hack 2024",
-      description: "Develop technology solutions for environmental challenges. Work on projects that make a positive impact on our planet.",
+      description:
+        "Develop technology solutions for environmental challenges. Work on projects that make a positive impact on our planet.",
       startAt: "2024-05-10T08:00:00Z",
       endAt: "2024-05-12T17:00:00Z",
       tags: ["Sustainability", "Environment"],
       participantCount: 156,
       location: "Austin, TX",
-      imageUrl: hackathonHeroImage
+      imageUrl: undefined,
     },
     {
       id: "4",
       title: "Mobile App Innovation",
-      description: "Create the next breakthrough mobile application. Focus on user experience, performance, and innovative features.",
+      description:
+        "Create the next breakthrough mobile application. Focus on user experience, performance, and innovative features.",
       startAt: "2024-06-01T09:00:00Z",
       endAt: "2024-06-03T18:00:00Z",
       tags: ["Mobile", "iOS", "Android"],
       participantCount: 124,
       location: "New York, NY",
-      imageUrl: hackathonHeroImage
+      imageUrl: undefined,
     },
     {
       id: "5",
       title: "Blockchain & Crypto Challenge",
-      description: "Build decentralized applications and explore the future of blockchain technology. Focus on DeFi, NFTs, and Web3.",
+      description:
+        "Build decentralized applications and explore the future of blockchain technology. Focus on DeFi, NFTs, and Web3.",
       startAt: "2024-07-15T10:00:00Z",
       endAt: "2024-07-17T20:00:00Z",
       tags: ["Blockchain", "Web3", "Crypto"],
       participantCount: 98,
       location: "Virtual",
-      imageUrl: aiHackathonImage
+      imageUrl: undefined,
     },
     {
       id: "6",
       title: "Healthcare Tech Solutions",
-      description: "Develop technology solutions that improve healthcare delivery and patient outcomes. Partner with medical professionals.",
+      description:
+        "Develop technology solutions that improve healthcare delivery and patient outcomes. Partner with medical professionals.",
       startAt: "2024-08-10T08:00:00Z",
       endAt: "2024-08-12T17:00:00Z",
       tags: ["Healthcare", "MedTech", "AI"],
       participantCount: 167,
       location: "London, UK",
-      imageUrl: webHackathonImage
-    }
+      imageUrl: undefined,
+    },
   ];
 
-  const filteredHackathons = mockHackathons.filter(hackathon => {
-    const matchesSearch = hackathon.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         hackathon.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesLocation = !selectedLocation || hackathon.location === selectedLocation;
-    
-    const matchesTags = selectedTags.length === 0 || 
-                       selectedTags.some(tag => hackathon.tags.includes(tag));
-    
+  const filteredHackathons = mockHackathons.filter((hackathon) => {
+    const matchesSearch =
+      hackathon.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      hackathon.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesLocation =
+      !selectedLocation ||
+      selectedLocation === "all" ||
+      hackathon.location === selectedLocation;
+
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.some((tag) => hackathon.tags.includes(tag));
+
     return matchesSearch && matchesLocation && matchesTags;
   });
 
   const handleApply = (id: string) => {
-    console.log('Apply to hackathon:', id);
+    console.log("Apply to hackathon:", id);
   };
 
   const handleViewDetails = (id: string) => {
-    console.log('View hackathon details:', id);
+    console.log("View hackathon details:", id);
   };
 
   const handleTagToggle = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
   const clearFilters = () => {
     setSearchQuery("");
-    setSelectedLocation("");
+    setSelectedLocation("all");
     setSelectedTags([]);
     setSortBy("date");
   };
@@ -131,8 +165,16 @@ export default function Discover() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2" data-testid="text-discover-title">Discover Hackathons</h1>
-          <p className="text-muted-foreground">Find the perfect hackathon to showcase your skills and meet amazing people</p>
+          <h1
+            className="text-3xl font-bold mb-2"
+            data-testid="text-discover-title"
+          >
+            Discover Hackathons
+          </h1>
+          <p className="text-muted-foreground">
+            Find the perfect hackathon to showcase your skills and meet amazing
+            people
+          </p>
         </div>
 
         {/* Search and Filters */}
@@ -165,14 +207,22 @@ export default function Discover() {
 
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                    <SelectTrigger className="w-48" data-testid="select-location">
+                  <Select
+                    value={selectedLocation}
+                    onValueChange={setSelectedLocation}
+                  >
+                    <SelectTrigger
+                      className="w-48"
+                      data-testid="select-location"
+                    >
                       <SelectValue placeholder="All locations" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All locations</SelectItem>
-                      {locations.map(location => (
-                        <SelectItem key={location} value={location}>{location}</SelectItem>
+                      <SelectItem value="all">All locations</SelectItem>
+                      {locations.map((location) => (
+                        <SelectItem key={location} value={location}>
+                          {location}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -192,7 +242,9 @@ export default function Discover() {
                   </Select>
                 </div>
 
-                {(selectedTags.length > 0 || selectedLocation || searchQuery) && (
+                {(selectedTags.length > 0 ||
+                  selectedLocation ||
+                  searchQuery) && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -210,7 +262,7 @@ export default function Discover() {
                   <div>
                     <h3 className="font-medium mb-3">Technologies & Tags</h3>
                     <div className="flex flex-wrap gap-2">
-                      {allTags.map(tag => (
+                      {allTags.map((tag) => (
                         <div key={tag} className="flex items-center space-x-2">
                           <Checkbox
                             id={tag}
@@ -218,7 +270,10 @@ export default function Discover() {
                             onCheckedChange={() => handleTagToggle(tag)}
                             data-testid={`checkbox-tag-${tag.toLowerCase()}`}
                           />
-                          <label htmlFor={tag} className="text-sm cursor-pointer">
+                          <label
+                            htmlFor={tag}
+                            className="text-sm cursor-pointer"
+                          >
                             {tag}
                           </label>
                         </div>
@@ -231,15 +286,22 @@ export default function Discover() {
               {/* Active Filters */}
               {(selectedTags.length > 0 || selectedLocation) && (
                 <div className="flex flex-wrap gap-2">
-                  {selectedTags.map(tag => (
-                    <Badge key={tag} variant="secondary" className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
-                           onClick={() => handleTagToggle(tag)}>
+                  {selectedTags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={() => handleTagToggle(tag)}
+                    >
                       {tag} ×
                     </Badge>
                   ))}
-                  {selectedLocation && (
-                    <Badge variant="secondary" className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
-                           onClick={() => setSelectedLocation("")}>
+                  {selectedLocation && selectedLocation !== "all" && (
+                    <Badge
+                      variant="secondary"
+                      className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={() => setSelectedLocation("all")}
+                    >
                       📍 {selectedLocation} ×
                     </Badge>
                   )}
@@ -252,12 +314,16 @@ export default function Discover() {
         {/* Results */}
         <div className="mb-4 flex items-center justify-between">
           <p className="text-muted-foreground" data-testid="text-results-count">
-            {filteredHackathons.length} hackathon{filteredHackathons.length !== 1 ? 's' : ''} found
+            {filteredHackathons.length} hackathon
+            {filteredHackathons.length !== 1 ? "s" : ""} found
           </p>
         </div>
 
         {/* Hackathon Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="hackathon-grid">
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          data-testid="hackathon-grid"
+        >
           {filteredHackathons.map((hackathon) => (
             <HackathonCard
               key={hackathon.id}
@@ -270,10 +336,17 @@ export default function Discover() {
 
         {filteredHackathons.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4" data-testid="text-no-results">
+            <p
+              className="text-muted-foreground mb-4"
+              data-testid="text-no-results"
+            >
               No hackathons match your current filters.
             </p>
-            <Button variant="outline" onClick={clearFilters} data-testid="button-clear-all-filters">
+            <Button
+              variant="outline"
+              onClick={clearFilters}
+              data-testid="button-clear-all-filters"
+            >
               Clear all filters
             </Button>
           </div>

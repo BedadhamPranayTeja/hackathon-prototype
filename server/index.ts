@@ -39,6 +39,19 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Default to development mode if NODE_ENV is not set
+  if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = "development";
+  }
+
+  // Setup Vite or static serving
+  if (process.env.NODE_ENV === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
+
+  // Error handler - must be after all routes
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -46,20 +59,6 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  // Default to development mode if NODE_ENV is not set
-  if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = "development";
-  }
-
-  if (process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
 
   // Serve the app on the port specified in the environment variable PORT
   // Defaults to 3000 if not specified.
