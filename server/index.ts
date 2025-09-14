@@ -50,22 +50,25 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  // Default to development mode if NODE_ENV is not set
+  if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = "development";
+  }
+
+  if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
+  // Serve the app on the port specified in the environment variable PORT
+  // Defaults to 3000 if not specified.
+  // This serves both the API and the client.
+  if (!process.env.PORT) {
+    process.env.PORT = "3000";
+  }
+  const port = parseInt(process.env.PORT, 10);
+  server.listen(port, "localhost", () => {
     log(`serving on port ${port}`);
   });
 })();
